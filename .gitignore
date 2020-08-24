@@ -1,0 +1,8 @@
+node_modules
+.idea
+.DS_Store
+package-lock.json
+combined.log
+/services/credentials.json
+/services/token.json
+/.env
