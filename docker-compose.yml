@@ -1,0 +1,47 @@
+version: "3.7"
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:9.6
+    ports:
+      - "35432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456789
+      POSTGRES_DB: decode_online
+    volumes:
+      - decode_online_db:/var/lib/postgresql/data
+    networks:
+      - decode_online_net
+
+  server:
+    container_name: server
+    build: .
+    depends_on:
+      - postgres
+    environment:
+      DB_USERNAME: postgres
+      DB_PASSWORD: 123456789
+      DB_NAME: decode_online
+      DB_HOSTNAME: postgres
+      DB_PORT: 5432
+      NODE_ENV: development
+      PORT: 5001
+      WAIT_HOSTS: postgres:5432
+      WAIT_BEFORE_HOSTS: 2
+    ports:
+      - 5001:5001
+    volumes:
+      - ./server:/app/
+      - /app/node_modules
+    networks:
+      - decode_online_net
+
+volumes:
+    decode_online_db:
+
+networks:
+  decode_online_net:
+    driver: bridge
+    name: decode_online_net
